@@ -4,6 +4,20 @@ function Food({ food }) {
   return (
     <div>
       <h1>{food.Name}</h1>
+      {food.Steps.map((e) => {
+        let imgs = [];
+        {
+          e.StepImage.map((f) => {
+            imgs.push(
+              <img
+                key={f.name}
+                src={`http://localhost:1337${f.formats.small.url}`}
+              />
+            );
+          });
+        }
+        return imgs;
+      })}
       <p>
         <Link href="/">
           <a>Back to home</a>
