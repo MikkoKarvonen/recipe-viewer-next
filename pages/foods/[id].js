@@ -1,9 +1,31 @@
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 
 function Food({ food }) {
+  let [incredients, setIncredients] = useState([]);
+  console.log(food);
+
+  useEffect(() => {
+    food.Steps.map((e) => {
+      e.Ingredient.map((f) => {
+        setIncredients((incredients) => [...incredients, f]);
+      });
+    });
+  }, []);
+
   return (
     <div>
       <h1>{food.Name}</h1>
+      <small>{food.Duration} minutes</small>
+      <ul>
+        {incredients.map((e) => {
+          return (
+            <li>
+              {e.Amount} {e.Unit} <strong>{e.Ingredient}</strong>
+            </li>
+          );
+        })}
+      </ul>
       {food.Steps.map((e) => {
         let imgs = [];
         {
