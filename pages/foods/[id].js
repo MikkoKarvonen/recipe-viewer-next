@@ -3,7 +3,7 @@ import Link from "next/link";
 
 function Food({ food }) {
   let [incredients, setIncredients] = useState([]);
-  console.log(food);
+  let [step, setStep] = useState(0);
 
   useEffect(() => {
     food.Steps.map((e) => {
@@ -15,31 +15,52 @@ function Food({ food }) {
 
   return (
     <div>
-      <h1>{food.Name}</h1>
-      <small>{food.Duration} minutes</small>
-      <ul>
-        {incredients.map((e) => {
-          return (
-            <li>
-              {e.Amount} {e.Unit} <strong>{e.Ingredient}</strong>
-            </li>
-          );
-        })}
-      </ul>
-      {food.Steps.map((e) => {
-        let imgs = [];
-        {
-          e.StepImage.map((f) => {
-            imgs.push(
-              <img
-                key={f.name}
-                src={`http://localhost:1337${f.formats.small.url}`}
-              />
-            );
-          });
-        }
-        return imgs;
-      })}
+      {step == 0 ? (
+        <>
+          <h1>{food.Name}</h1>
+          <small>Duration: {food.Duration} minutes</small>
+          <br />
+          {food
+            ? food.Finish.map((f) => {
+                return (
+                  <img
+                    key={f.name}
+                    src={`http://localhost:1337${f.formats.small.url}`}
+                  />
+                );
+              })
+            : null}
+          <h2>Incredients</h2>
+          <ul>
+            {incredients.map((e) => {
+              return (
+                <li key={e.Ingredient}>
+                  {e.Amount} {e.Unit} <strong>{e.Ingredient}</strong>
+                </li>
+              );
+            })}
+          </ul>
+          <p>{food.Steps.length} steps</p>
+          <button onClick={() => setStep(step + 1)}>Start</button>
+        </>
+      ) : (
+        <>
+          {food.Steps.map((e) => {
+            let imgs = [];
+            {
+              e.StepImage.map((f) => {
+                imgs.push(
+                  <img
+                    key={f.name}
+                    src={`http://localhost:1337${f.formats.small.url}`}
+                  />
+                );
+              });
+            }
+            return imgs;
+          })}
+        </>
+      )}
       <p>
         <Link href="/">
           <a>Back to home</a>
