@@ -1,5 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+
+function Step({ step, setStep }) {
+  let imgs = [];
+  {
+    step.StepImage.map((f) => {
+      imgs.push(
+        <img key={f.name} src={`http://localhost:1337${f.formats.small.url}`} />
+      );
+    });
+  }
+
+  return (
+    <>
+      {imgs}
+      <small>Duration: {step.Duration} minutes</small>
+      <ul>
+        {step.Ingredient.map((e) => {
+          return (
+            <li key={e.Ingredient}>
+              {e.Amount} {e.Unit} <strong>{e.Ingredient}</strong>
+            </li>
+          );
+        })}
+      </ul>
+      <p>{step.Guide}</p>
+      <button onClick={setStep}>Next</button>
+    </>
+  );
+}
 
 function Food({ food }) {
   let [incredients, setIncredients] = useState([]);
@@ -12,6 +41,14 @@ function Food({ food }) {
       });
     });
   }, []);
+
+  const gatedSetSteps = useCallback(() => {
+    if (step == food.Steps.length) {
+      setStep(0);
+    } else {
+      setStep(step + 1);
+    }
+  });
 
   return (
     <div>
@@ -44,22 +81,7 @@ function Food({ food }) {
           <button onClick={() => setStep(step + 1)}>Start</button>
         </>
       ) : (
-        <>
-          {food.Steps.map((e) => {
-            let imgs = [];
-            {
-              e.StepImage.map((f) => {
-                imgs.push(
-                  <img
-                    key={f.name}
-                    src={`http://localhost:1337${f.formats.small.url}`}
-                  />
-                );
-              });
-            }
-            return imgs;
-          })}
-        </>
+        <Step step={food.Steps[step - 1]} setStep={gatedSetSteps} />
       )}
       <p>
         <Link href="/">
